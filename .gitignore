@@ -1,0 +1,7 @@
+model/*
+result/*
+data/*
+
+*.png
+*.jpg
+*.log

@@ -2,11 +2,12 @@
 #-*- coding:utf-8 -*-
 
 import torch
-from data import dataloader
+from dataloader import Cifar10DataSet, T
 import matplotlib.pyplot as plt
 import torchvision
-from net import net
+from net import Net
 import numpy as np
+from torch.utils.data import DataLoader
 
 def imshow(img):
     img = img/2 + 0.5
@@ -17,13 +18,20 @@ def imshow(img):
 def main():
 
     # classify_net = net.Net()
-    classify_net = torch.load('model/model-epoch3.pkl')
+    classify_net = torch.load('model/model-epoch4.pkl')
     #correct=0
     #total = 0
     correct_classes=[ 0 for i in range(10)]
     total_classes = [ 0 for i in range(10)]
+    transform = torchvision.transforms.Compose(
+        [T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
+    cifar10_test_dataset = Cifar10DataSet('/home/tony/codes/data/cifar10/', 'test_label.txt',transform=transform)
+    testloader = DataLoader(cifar10_test_dataset,batch_size = 4,
+            shuffle=False,num_workers=2)
+
     with torch.no_grad():
-        for data in dataloader.testloader:
+        #for data in dataloader.testloader:
+        for data in testloader:
             inputs,labels = data
             outputs = classify_net(inputs)
             _,pred = torch.max(outputs,1)
@@ -41,10 +49,10 @@ def main():
             #print('tested on {}'.format(total),end='\r')
             print('tested on {}'.format(np.sum(total_classes)),end='\r')
     print()
-    print('test finished')
+    print('test finished, total acc: {:.2f}%'.format(np.sum(correct_classes)*100/np.sum(total_classes)))
     #print('correct:{}, total:{}. acc:{:.2f}'.format(correct,total, correct/total))
     for i in range(10):
-        print('acc of {}: {:.2f}%'.format(dataloader.classes[i],100 * correct_classes[i]/total_classes[i]))
+        print('acc of {}: {:.2f}%'.format(cifar10_test_dataset.classes[i],100 * correct_classes[i]/total_classes[i]))
 
 if __name__ == '__main__':
     main()

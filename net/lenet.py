@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class LeNet(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes=10):
         super().__init__()
         self.name = 'lenet'
         self.conv1 = nn.Conv2d(3,6,5)
@@ -13,7 +13,7 @@ class LeNet(nn.Module):
         self.conv2 = nn.Conv2d(6,16,5)
         self.fc1 = nn.Linear(16*5*5, 120)
         self.fc2 = nn.Linear(120,84)
-        self.fc3 = nn.Linear(84,10)
+        self.fc3 = nn.Linear(84,num_classes)
     
     def forward(self,x):
         """ x: batchsize * channel * h * w

@@ -4,9 +4,10 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-class Net(nn.Module):
+class LeNet(nn.Module):
     def __init__(self):
         super().__init__()
+        self.name = 'lenet'
         self.conv1 = nn.Conv2d(3,6,5)
         self.pool = nn.MaxPool2d(2,2)
         self.conv2 = nn.Conv2d(6,16,5)
@@ -15,6 +16,16 @@ class Net(nn.Module):
         self.fc3 = nn.Linear(84,10)
     
     def forward(self,x):
+        """ x: batchsize * channel * h * w
+        x : 4 * 3 * 32 * 32
+        conv1: 4 * 6 * 28 * 28
+        pool: 4 * 6 * 14 * 14
+        conv2: 4 * 16 * 10 * 10
+        pool: 4 * 16 * 5 * 5
+        fc1: 4 * 120
+        fc2: 4 * 84
+        fc3: 4 * 10
+        """
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
         x = x.view(-1,16*5*5)
@@ -24,5 +35,5 @@ class Net(nn.Module):
         return x
 
 if __name__ == '__main__':
-    net = Net()
+    net = LeNet()
     print(net)

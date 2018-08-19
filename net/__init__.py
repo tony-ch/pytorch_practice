@@ -1,1 +1,2 @@
-from .net import Net
+from .lenet import LeNet
+from .alexnet import AlexNet

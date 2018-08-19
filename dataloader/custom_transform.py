@@ -23,9 +23,14 @@ class Rescale(object):
             new_h, new_w = self.output_size
 
         new_h, new_w = int(new_h), int(new_w)
-
-        image = transform.resize(image, (new_h,new_w))
         
+        if (h,w) == (new_h,new_w):
+            return sample
+
+        image = transform.resize(image, (new_h,new_w), mode='constant')
+        # fix skimage resize side-effect
+        image = image * 255
+        image = image.astype(np.uint8)
         return (image,label)
 
 
@@ -46,8 +51,8 @@ class RandomCrop(object):
         assert new_w<=w
         assert new_h<=h
 
-        top = np.random.randint(0,new_h-h)
-        left = np.random.randint(0,new_w-w)
+        top = np.random.randint(0,h-new_h+1)
+        left = np.random.randint(0,w-new_w+1)
 
         image = image[top:top+new_h,left:left+new_w]
 

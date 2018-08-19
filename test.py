@@ -5,7 +5,6 @@ import torch
 from dataloader import Cifar10DataSet, T
 import matplotlib.pyplot as plt
 import torchvision
-from net import Net
 import numpy as np
 from torch.utils.data import DataLoader
 
@@ -16,15 +15,15 @@ def imshow(img):
     plt.show()
 
 def main():
-
-    # classify_net = net.Net()
-    classify_net = torch.load('model/model-epoch4.pkl')
+    use_cuda = torch.cuda.is_available()
+    classify_net = torch.load('model/model-alexnet-epoch4.pkl')
+    classify_net.eval()
     #correct=0
     #total = 0
     correct_classes=[ 0 for i in range(10)]
     total_classes = [ 0 for i in range(10)]
     transform = torchvision.transforms.Compose(
-        [T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
+        [T.Rescale(256), T.RandomCrop(224), T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
     cifar10_test_dataset = Cifar10DataSet('/home/tony/codes/data/cifar10/', 'test_label.txt',transform=transform)
     testloader = DataLoader(cifar10_test_dataset,batch_size = 4,
             shuffle=False,num_workers=2)
@@ -33,6 +32,8 @@ def main():
         #for data in dataloader.testloader:
         for data in testloader:
             inputs,labels = data
+            if use_cuda:
+                inputs, labels = inputs.cuda(),labels.cuda()
             outputs = classify_net(inputs)
             _,pred = torch.max(outputs,1)
             #print('GT', ' '.join('{:5s}'.format(dataloader.classes[labels[j]]) for j in range(4)))

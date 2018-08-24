@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import torch.optim as optim
-from net import LeNet,AlexNet
+from net import LeNet,AlexNet,VGG16
 from dataloader import Cifar10DataSet, T
 # import dataloader.custom_transform as T
 import torch.nn as nn
@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 def main():
     use_cuda = torch.cuda.is_available()
     print(">>> building net")
-    classify_net = AlexNet()
+    classify_net = VGG16()
     classify_net.train()
     print(classify_net)
 
@@ -22,14 +22,14 @@ def main():
         print(">>> using cuda now")
         classify_net.cuda()
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(classify_net.parameters(), lr=0.01, momentum=0.9)
+    optimizer = optim.SGD(classify_net.parameters(), lr=0.005, momentum=0.9, weight_decay=1e-4)
     max_epoch = 4
     output_step = 20
 
     transform = transforms.Compose(
         [T.Rescale(256), T.RandomCrop(224),T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
     cifar10_train_dataset = Cifar10DataSet('/home/tony/codes/data/cifar10/', 'train_label.txt',transform=transform)
-    trainloader = DataLoader(cifar10_train_dataset,batch_size = 32,
+    trainloader = DataLoader(cifar10_train_dataset,batch_size = 24,
        shuffle=True,num_workers=0)
 
     print(">>> start training")
@@ -49,9 +49,9 @@ def main():
             optimizer.step()
 
             runing_loss += loss.item()
-            
+            lr = optimizer.param_groups[0]['lr']
             if i%output_step == output_step-1:
-                print('[epoch: {:3d}, step: {:5d}] loss: {:.3f}'.format(epoch+1,i+1,runing_loss/output_step))
+                print('[epoch: {:3d}, step: {:5d}] loss: {:.3f} lr: {:.6f}'.format(epoch+1,i+1,runing_loss/output_step, lr))
                 runing_loss = 0.0
     print('>>> finished training')
     torch.save(classify_net,'model/model-{}-epoch{}.pkl'.format(classify_net.name,max_epoch))

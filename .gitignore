@@ -1,6 +1,7 @@
 model/*
 result/*
 data/*
+*/__pycache__/
 
 *.png
 *.jpg

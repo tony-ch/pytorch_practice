@@ -16,7 +16,7 @@ def imshow(img):
 
 def main():
     use_cuda = torch.cuda.is_available()
-    classify_net = torch.load('model/model-alexnet-epoch4.pkl')
+    classify_net = torch.load('model/model-vgg16-epoch4.pkl')
     classify_net.eval()
     #correct=0
     #total = 0

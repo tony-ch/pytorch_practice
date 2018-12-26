@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import torch.optim as optim
-from net import LeNet,AlexNet,VGG16
+from net import LeNet,AlexNet,VGG16,Inception_v1,Inception_v2,Inception_v1_bn,Inception_v3,Xception
 from dataloader import Cifar10DataSet, T
 # import dataloader.custom_transform as T
 import torch.nn as nn
@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 def main():
     use_cuda = torch.cuda.is_available()
     print(">>> building net")
-    classify_net = VGG16()
+    classify_net = Inception_v2()
     classify_net.train()
     print(classify_net)
 
@@ -22,12 +22,13 @@ def main():
         print(">>> using cuda now")
         classify_net.cuda()
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(classify_net.parameters(), lr=0.005, momentum=0.9, weight_decay=1e-4)
+    optimizer = optim.SGD(classify_net.parameters(), lr=0.01, momentum=0.9, weight_decay=1e-4)
+    #optimizer = optim.RMSprop(classify_net.parameters(), lr=0.05, alpha=0.99, eps=1.0, weight_decay=0.9, momentum=0.9)
     max_epoch = 4
     output_step = 20
 
     transform = transforms.Compose(
-        [T.Rescale(256), T.RandomCrop(224),T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
+        [T.Rescale(320), T.RandomCrop(299),T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
     cifar10_train_dataset = Cifar10DataSet('/home/tony/codes/data/cifar10/', 'train_label.txt',transform=transform)
     trainloader = DataLoader(cifar10_train_dataset,batch_size = 24,
        shuffle=True,num_workers=0)
@@ -44,6 +45,9 @@ def main():
             optimizer.zero_grad()
             output = classify_net(inputs)
             loss = criterion(output,labels)
+            #aux_loss_1 = criterion(aux_1,labels)
+            #aux_loss_2 = criterion(aux_2,labels)
+            #loss = res_loss+0.3*aux_loss_1+0.3*aux_loss_2
             loss.backward()
 
             optimizer.step()

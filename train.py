@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 def main():
     use_cuda = torch.cuda.is_available()
     print(">>> building net")
-    classify_net = Inception_v2()
+    classify_net = Inception_v2(output_channel=10)
     classify_net.train()
     print(classify_net)
 

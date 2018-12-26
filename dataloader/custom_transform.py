@@ -27,7 +27,7 @@ class Rescale(object):
         if (h,w) == (new_h,new_w):
             return sample
 
-        image = transform.resize(image, (new_h,new_w), mode='constant')
+        image = transform.resize(image, (new_h,new_w), anti_aliasing=False, mode='constant')
         # fix skimage resize side-effect
         image = image * 255
         image = image.astype(np.uint8)

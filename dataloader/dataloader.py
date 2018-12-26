@@ -11,7 +11,7 @@ from skimage import io
 import os
 from . import custom_transform as T
 
-class Cifar10DataSet(Dataset):
+class ClassificationDataset(Dataset):
     def __init__(self, root_dir, list_file, transform=None):
         super().__init__()
         self.transform = transform
@@ -22,8 +22,6 @@ class Cifar10DataSet(Dataset):
         sample_list = [x.strip('\n') for x in open(list_file).readlines()]
         self.img_list = [ x.split()[0] for x in sample_list]
         self.label_list = [ int(x.split()[1]) for x in sample_list]
-        self.classes=('plane','car','bird','cat','deer','dog','frog','horse',
-        'ship','truck')
     
     def __len__(self):
         return len(self.img_list)
@@ -38,6 +36,13 @@ class Cifar10DataSet(Dataset):
             sample = self.transform(sample)
         
         return sample
+
+class Cifar10DataSet(ClassificationDataset):
+    def __init__(self, root_dir, list_file, transform=None):
+        super().__init__(root_dir,list_file,transform)
+        self.classes=('plane','car','bird','cat','deer','dog','frog','horse',
+        'ship','truck')
+        self.classnum=10
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt

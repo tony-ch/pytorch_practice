@@ -21,7 +21,11 @@ class ClassificationDataset(Dataset):
         self.root_dir = root_dir
         sample_list = [x.strip('\n') for x in open(list_file).readlines()]
         self.img_list = [ x.split()[0] for x in sample_list]
-        self.label_list = [ int(x.split()[1]) for x in sample_list]
+        if len(sample_list[0].split())>1:
+            self.has_label = True
+            self.label_list = [ int(x.split()[1]) for x in sample_list]
+        else:
+            self.has_label = False
     
     def __len__(self):
         return len(self.img_list)
@@ -29,13 +33,19 @@ class ClassificationDataset(Dataset):
     def __getitem__(self, idx):
         # img: h*w*c numpy array, RGB mode
         img = io.imread(os.path.join(self.root_dir, self.img_list[idx]))
-        label = self.label_list[idx]
+        if self.has_label:
+            label = self.label_list[idx]
+        else:
+            label = None
         sample = (img, label)
 
         if self.transform is not None:
             sample = self.transform(sample)
         
-        return sample
+        if self.has_label:
+            return sample
+        else:
+            return sample[0]
 
 class Cifar10DataSet(ClassificationDataset):
     def __init__(self, root_dir, list_file, transform=None):

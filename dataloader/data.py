@@ -6,10 +6,10 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-import numpy as np
 from skimage import io
 import os
-from . import custom_transform as T
+from dataloader import custom_transform as T
+
 
 class ClassificationDataset(Dataset):
     def __init__(self, root_dir, list_file, transform=None):

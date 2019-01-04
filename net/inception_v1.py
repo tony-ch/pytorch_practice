@@ -166,14 +166,14 @@ class Inception(nn.Module):
 
 
 class Inception_v1(Inception):
-    def __init__(self,input_channel=3,output_channel=10,aux_logits=True):
-        super().__init__(input_channel,output_channel,aux_logits,use_bn=False)
+    def __init__(self,input_channel=3,num_classes=10,aux_logits=True):
+        super().__init__(input_channel,num_classes,aux_logits,use_bn=False)
         self.name = 'inception_v1'
 
 
 class Inception_v1_bn(Inception):
-    def __init__(self, input_channel=3,output_channel=10,aux_logits=True):
-        super().__init__(input_channel,output_channel,aux_logits,use_bn=True)
+    def __init__(self, input_channel=3,num_classes=10,aux_logits=True):
+        super().__init__(input_channel,num_classes,aux_logits,use_bn=True)
         self.name = 'inception_v1_bn'
 
 

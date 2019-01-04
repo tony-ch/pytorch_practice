@@ -105,7 +105,7 @@ class InceptionAux(nn.Module):
         return x
 
 class Inception_v2(nn.Module):
-    def __init__(self,input_channel=3,output_channel=10):
+    def __init__(self,input_channel=3,num_classes=10):
         super().__init__()
         self.name = "inception_v2"
         self.conv1_7x7 = BasicConv2d(input_channel,64,kernel_size=7,stride=2,padding=3)
@@ -126,7 +126,7 @@ class Inception_v2(nn.Module):
         self.inception_5b = InceptionBlock(1024,[352,192,320,160,224,128])
         self.inception_5c = InceptionBlock(1024,[352,192,320,160,224,128])
 
-        self.linear = nn.Linear(1024,output_channel)
+        self.linear = nn.Linear(1024,num_classes)
 
     def forward(self,x):
         # 224x224x3

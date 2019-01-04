@@ -8,7 +8,7 @@ import torch.nn.functional as F
 __all__ = ['Inception_v3']
 
 class Inception_v3(nn.Module):
-    def __init__(self, input_channel=3, output_channel=10):
+    def __init__(self, input_channel=3, num_classes=10):
         super().__init__()
         self.name = 'inception_v3'
         self.conv1_3x3 = BasicConv2d(input_channel, 32, kernel_size=3, stride=2)
@@ -35,7 +35,7 @@ class Inception_v3(nn.Module):
         self.mixed_7c = InceptionC2(2048)
 
         #pool
-        self.fc = nn.Linear(2048, output_channel)
+        self.fc = nn.Linear(2048, num_classes)
     def forward(self, x):
         # 299x299x3
         conv1 = self.conv1_3x3(x)

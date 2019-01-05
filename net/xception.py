@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
 __all__ = ['Xception']
@@ -62,7 +62,7 @@ class Block(nn.Module):
         return x+skip
 
 class Xception(nn.Module):
-    def __init__(self, input_channel=3, output_channel=10):
+    def __init__(self, input_channel=3, num_classes=10):
         super().__init__()
         self.name = 'xception'
 
@@ -90,7 +90,7 @@ class Xception(nn.Module):
             nn.ReLU(),
             nn.AdaptiveAvgPool2d((1,1))
         )
-        self.fc = nn.Linear(2048,output_channel)
+        self.fc = nn.Linear(2048,num_classes)
 
 
     def forward(self, x):

@@ -54,6 +54,12 @@ class Cifar10DataSet(ClassificationDataset):
         'ship','truck')
         self.classnum=10
 
+class CatvsDogDataSet(ClassificationDataset):
+    def __init__(self, root_dir, list_file, transform=None):
+        super().__init__(root_dir,list_file,transform)
+        self.classes=('cat','dog')
+        self.classnum=2
+
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import numpy as np

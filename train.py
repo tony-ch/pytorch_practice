@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import torch.optim as optim
-from net import LeNet,AlexNet,VGG16,Inception_v1,Inception_v2,Inception_v1_bn,Inception_v3,Xception
+from net import LeNet,AlexNet,VGG16,Inception_v1,Inception_v2,Inception_v1_bn,Inception_v3,Xception,XCeption,resnet152,resnet50
 from dataloader import Cifar10DataSet, T
 # import dataloader.custom_transform as T
 import torch.nn as nn
@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 def main():
     use_cuda = torch.cuda.is_available()
     print(">>> building net")
-    classify_net = Inception_v2(output_channel=10)
+    classify_net = resnet152(pretrained=True, num_classes=2)
     classify_net.train()
     print(classify_net)
 
@@ -22,15 +22,16 @@ def main():
         print(">>> using cuda now")
         classify_net.cuda()
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(classify_net.parameters(), lr=0.01, momentum=0.9, weight_decay=1e-4)
+    optimizer = optim.SGD(classify_net.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-4)
+    # optimizer = optim.Adam(classify_net.parameters(),lr=0.005)
     #optimizer = optim.RMSprop(classify_net.parameters(), lr=0.05, alpha=0.99, eps=1.0, weight_decay=0.9, momentum=0.9)
-    max_epoch = 4
+    max_epoch = 20
     output_step = 20
 
     transform = transforms.Compose(
-        [T.Rescale(320), T.RandomCrop(299),T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
-    cifar10_train_dataset = Cifar10DataSet('/home/tony/codes/data/cifar10/', 'train_label.txt',transform=transform)
-    trainloader = DataLoader(cifar10_train_dataset,batch_size = 24,
+        [T.Rescale((256,256)), T.RandomCrop(224),T.RandomHorizontalFilp(),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
+    cifar10_train_dataset = Cifar10DataSet('/home/tony/codes/data/catvsdog/', 'train_all_label.txt',transform=transform)
+    trainloader = DataLoader(cifar10_train_dataset,batch_size = 32,
        shuffle=True,num_workers=0)
 
     print(">>> start training")
@@ -57,8 +58,10 @@ def main():
             if i%output_step == output_step-1:
                 print('[epoch: {:3d}, step: {:5d}] loss: {:.3f} lr: {:.6f}'.format(epoch+1,i+1,runing_loss/output_step, lr))
                 runing_loss = 0.0
+        if epoch%4 == 3:
+            torch.save(classify_net,'model/model-{}-epoch{}.pkl'.format(classify_net.name,epoch))
     print('>>> finished training')
-    torch.save(classify_net,'model/model-{}-epoch{}.pkl'.format(classify_net.name,max_epoch))
+    torch.save(classify_net,'model/model-{}-epoch{}-final.pkl'.format(classify_net.name,max_epoch))
     #torch.save(classify_net.state_dict(),'model/model-epoch{}.pkl'.format(max_epoch))
 
 if __name__ == '__main__':

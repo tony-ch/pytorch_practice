@@ -3,7 +3,10 @@ result/*
 data/*
 */__pycache__/
 
+
+*.pyc
 *.png
 *.jpg
 *.log
 .idea/
+.vscode/

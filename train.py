@@ -56,10 +56,10 @@ def main():
             runing_loss += loss.item()
             lr = optimizer.param_groups[0]['lr']
             if i%output_step == output_step-1:
-                print('[epoch: {:3d}, step: {:5d}] loss: {:.3f} lr: {:.6f}'.format(epoch+1,i+1,runing_loss/output_step, lr))
+                print('[epoch: {:3d}, step: {:5d}] loss: {:.5f} lr: {:.6f}'.format(epoch+1,i+1,runing_loss/output_step, lr))
                 runing_loss = 0.0
         if epoch%4 == 3:
-            torch.save(classify_net,'model/model-{}-epoch{}.pkl'.format(classify_net.name,epoch))
+            torch.save(classify_net,'model/model-{}-epoch{}.pkl'.format(classify_net.name,epoch+1))
     print('>>> finished training')
     torch.save(classify_net,'model/model-{}-epoch{}-final.pkl'.format(classify_net.name,max_epoch))
     #torch.save(classify_net.state_dict(),'model/model-epoch{}.pkl'.format(max_epoch))

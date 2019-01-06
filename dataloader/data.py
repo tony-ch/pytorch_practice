@@ -57,7 +57,7 @@ class Cifar10DataSet(ClassificationDataset):
 class CatvsDogDataSet(ClassificationDataset):
     def __init__(self, root_dir, list_file, transform=None):
         super().__init__(root_dir,list_file,transform)
-        self.classes=('cat','dog')
+        self.classes=('Cat','Dog')
         self.classnum=2
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
 
 import torch.optim as optim
 from net import LeNet,AlexNet,VGG16,Inception_v1,Inception_v2,Inception_v1_bn,Inception_v3,Xception,XCeption,resnet152,resnet50

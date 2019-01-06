@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 """
 Ported to pytorch thanks to [tstandley](https://github.com/tstandley/Xception-PyTorch)
 
@@ -21,7 +24,6 @@ normalize = transforms.Normalize(mean=[0.5, 0.5, 0.5],
 
 The resize parameter of the validation transform should be 333, and make sure to center crop at 299x299
 """
-from __future__ import print_function, division, absolute_import
 import math
 import torch
 import torch.nn as nn

@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 
@@ -177,7 +180,7 @@ def resnet18(pretrained=False, **kwargs):
         pretrained_dict = model_zoo.load_url(model_urls['resnet18'])
         #将pretrained_dict里不属于model_dict的键剔除掉
         if 'num_classes' in kwargs.keys() and not kwargs['num_classes']==1000:
-            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}} 
+            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}}
         # 更新现有的model_dict
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
@@ -197,7 +200,7 @@ def resnet34(pretrained=False, **kwargs):
         pretrained_dict = model_zoo.load_url(model_urls['resnet34'])
         #将pretrained_dict里不属于model_dict的键剔除掉
         if 'num_classes' in kwargs.keys() and not kwargs['num_classes']==1000:
-            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}} 
+            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}}
         # 更新现有的model_dict
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
@@ -217,7 +220,7 @@ def resnet50(pretrained=False, **kwargs):
         pretrained_dict = model_zoo.load_url(model_urls['resnet50'])
         #将pretrained_dict里不属于model_dict的键剔除掉
         if 'num_classes' in kwargs.keys() and not kwargs['num_classes']==1000:
-            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}} 
+            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}}
         # 更新现有的model_dict
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
@@ -237,7 +240,7 @@ def resnet101(pretrained=False, **kwargs):
         pretrained_dict = model_zoo.load_url(model_urls['resnet101'])
         #将pretrained_dict里不属于model_dict的键剔除掉
         if 'num_classes' in kwargs.keys() and not kwargs['num_classes']==1000:
-            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}} 
+            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}}
         # 更新现有的model_dict
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
@@ -257,7 +260,7 @@ def resnet152(pretrained=False, **kwargs):
         pretrained_dict = model_zoo.load_url(model_urls['resnet152'])
         #将pretrained_dict里不属于model_dict的键剔除掉
         if 'num_classes' in kwargs.keys() and not kwargs['num_classes']==1000:
-            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}} 
+            pretrained_dict =  {k: v for k, v in pretrained_dict.items() if k not in {'fc.bias','fc.weight'}}
         # 更新现有的model_dict
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)

@@ -3,10 +3,25 @@
 
 import torch
 from dataloader import Cifar10DataSet, T, CatvsDogDataSet
+import net
 import matplotlib.pyplot as plt
 import torchvision
 import numpy as np
 from torch.utils.data import DataLoader
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d',"--root_dir",type=str,default='/home/tony/codes/data/catvsdog/',help="data dir")
+    parser.add_argument('-l',"--list_file",type=str,default='test_list.txt',help="train label file")
+    parser.add_argument('-r',"--result_file",type=str,default='result/test_res.csv',help="file path to record result")
+    parser.add_argument("--check_point",type=str,default='model/model-resnet152-epoch12.pkl',help="model check point file to use")
+    parser.add_argument("--use_cuda",action="store_true",default=True,help="choose to use cuda or not")
+    parser.add_argument("--batch_size",type=int,default=32,help="batch size during training")
+    args = parser.parse_args()
+    if args.use_cuda and torch.cuda.is_available():
+        args.use_cuda = True
+    return args
 
 def imshow(img):
     img = img/2 + 0.5
@@ -15,65 +30,57 @@ def imshow(img):
     plt.show()
 
 def main():
-    use_cuda = torch.cuda.is_available()
-    classify_net = torch.load('model/model-resnet152-epoch16.pkl')
-    classify_net.eval()
-    batch_size = 4
+    args = parse_args()
+    
     transform = torchvision.transforms.Compose(
         [T.Rescale((224,224)),T.ToTensor(),T.Norm((0.5,0.5,0.5),(0.5,0.5,0.5))])
-    # cifar10_test_dataset = Cifar10DataSet('/home/tony/codes/data/cifar10/', 'test_label.txt',transform=transform)
-    # testloader = DataLoader(cifar10_test_dataset,batch_size = batch_size,
-    #         shuffle=False,num_workers=0)
-    # has_label = cifar10_test_dataset.has_label
-    # classnum = cifar10_test_dataset.classnum
-    catvsdog_test_dataset = CatvsDogDataSet('/home/tony/codes/data/catvsdog/','test_list.txt',transform=transform)
-    testloader = DataLoader(catvsdog_test_dataset,batch_size=batch_size,shuffle=False,num_workers=0)
-    has_label = catvsdog_test_dataset.has_label
-    classnum = catvsdog_test_dataset.classnum
-    res_out = open("res/test_res.csv","w")
+    dataset = CatvsDogDataSet(args.root_dir,args.list_file,transform=transform)
+    testloader = DataLoader(dataset,batch_size=args.batch_size,shuffle=False)
+
+    classify_net = net.resnet152(pretrained=False,num_classes=dataset.classnum)
+    classify_net.load_state_dict(torch.load(args.check_point))
+    classify_net.eval()
+    if args.use_cuda:
+        classify_net.cuda()
+
+    res_out = open(args.result_file,"w")
     res_out.write("id,label\n")
     cnt = 0
-    if has_label:
-        correct_classes = [0 for i in range(classnum)]
-        total_classes = [0 for i in range(classnum)]
+    if dataset.has_label:
+        correct_classes = [0 for i in range(dataset.classnum)]
+        total_classes = [0 for i in range(dataset.classnum)]
         with torch.no_grad():
             for data in testloader:
                 inputs,labels = data
-                if use_cuda:
+                if args.use_cuda:
                     inputs, labels = inputs.cuda(),labels.cuda()
                 outputs = classify_net(inputs)
                 _,pred = torch.max(outputs,1)
-                #print('GT', ' '.join('{:5s}'.format(cifar10_test_dataset.classes[labels[j]]) for j in range(batch_size)))
-                for j in range(batch_size):
+                for j in range(args.batch_size):
                     cnt+=1
-                    res_out.write(str(cnt)+","+catvsdog_test_dataset.classes[pred[j]]+"\n")
-                    # print(pred[j].item())
-                #print('PRED', ' '.join('{:5s}'.format(cifar10_test_dataset.classes[pred[j]]) for j in range(batch_size)))
-                #correct+=np.sum(pred.numpy()==labels.numpy())
+                    res_out.write(str(cnt)+","+dataset.classes[pred[j]]+"\n")
                 c = (pred==labels).squeeze()
-                for i in range(batch_size):
+                for i in range(args.batch_size):
                     label = labels[i]
                     correct_classes[label] += c[i].item()
                     total_classes[label]+=1
 
-                # print('tested on {}'.format(np.sum(total_classes)),end='\r')
+                print('tested on {}'.format(np.sum(total_classes)),end='\r')
         print()
         print('test finished, total acc: {:.2f}%'.format(np.sum(correct_classes)*100/np.sum(total_classes)))
-        for i in range(classnum):
-            print('acc of {}: {:.2f}%'.format(catvsdog_test_dataset.classes[i],100 * correct_classes[i]/total_classes[i]))
+        for i in range(dataset.classnum):
+            print('acc of {}: {:.2f}%'.format(dataset.classes[i],100 * correct_classes[i]/total_classes[i]))
     else:
         with torch.no_grad():
             for data in testloader:
                 inputs = data
-                if use_cuda:
+                if args.use_cuda:
                     inputs = inputs.cuda()
                 outputs = classify_net(inputs)
                 _,pred = torch.max(outputs,1)
-                #print('PRED', ' '.join('{:5s}'.format(cifar10_test_dataset.classes[pred[j]]) for j in range(batch_size)))
-                for j in range(batch_size):
+                for j in range(len(pred)):
                     cnt+=1
-                    res_out.write(str(cnt)+","+catvsdog_test_dataset.classes[pred[j]]+"\n")
-                    # print(pred[j].item())
+                    res_out.write(str(cnt)+","+dataset.classes[pred[j]]+"\n")
                 print('tested on {}'.format(cnt),end='\r')
         print()
         print('test finished')

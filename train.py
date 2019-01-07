@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import torch.optim as optim
-from net import LeNet,AlexNet,VGG16,Inception_v1,Inception_v2,Inception_v1_bn,Inception_v3,XCeption,resnet152,resnet50
+import net
 from dataloader import Cifar10DataSet, T
 # import dataloader.custom_transform as T
 import torch.nn as nn
@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 def main():
     use_cuda = torch.cuda.is_available()
     print(">>> building net")
-    classify_net = resnet152(pretrained=True, num_classes=2)
+    classify_net = net.Xception(pretrained=True, num_classes=2)
     classify_net.train()
     print(classify_net)
 

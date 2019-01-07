@@ -31,7 +31,7 @@ import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
 from torch.nn import init
 
-__all__ = ['XCeption']
+__all__ = ['Xception']
 
 model_urls = {
     'xception':'http://data.lip6.fr/cadene/pretrainedmodels/xception-43020ad28.pth',
@@ -40,7 +40,7 @@ model_urls = {
 
 class SeparableConv2d(nn.Module):
     def __init__(self,in_channels,out_channels,kernel_size=1,stride=1,padding=0,dilation=1,bias=False):
-        super(SeparableConv2d,self).__init__()
+        super().__init__()
 
         self.conv1 = nn.Conv2d(in_channels,in_channels,kernel_size,stride,padding,dilation,groups=in_channels,bias=bias)
         self.pointwise = nn.Conv2d(in_channels,out_channels,1,1,0,1,1,bias=bias)
@@ -53,7 +53,7 @@ class SeparableConv2d(nn.Module):
 
 class Block(nn.Module):
     def __init__(self,in_filters,out_filters,reps,strides=1,start_with_relu=True,grow_first=True):
-        super(Block, self).__init__()
+        super().__init__()
 
         if out_filters != in_filters or strides!=1:
             self.skip = nn.Conv2d(in_filters,out_filters,1,stride=strides, bias=False)
@@ -103,7 +103,7 @@ class Block(nn.Module):
         return x
 
 
-class Xception(nn.Module):
+class XceptionModule(nn.Module):
     """
     Xception optimized for the ImageNet dataset, as specified in
     https://arxiv.org/pdf/1610.02357.pdf
@@ -113,7 +113,7 @@ class Xception(nn.Module):
         Args:
             num_classes: number of classes
         """
-        super(Xception, self).__init__()
+        super().__init__()
         self.num_classes = num_classes
 
         # entry flow
@@ -206,9 +206,9 @@ class Xception(nn.Module):
         return x
 
 
-def XCeption(num_classes=1000, pretrained=False):
-    model = Xception(num_classes=num_classes)
-    model.name = 'pretrained_xception'
+def Xception(num_classes=1000, pretrained=False):
+    model = XceptionModule(num_classes=num_classes)
+    model.name = 'xception'
     if pretrained:
         model_dict = model.state_dict()
         pretrained_dict = model_zoo.load_url(model_urls['xception'])

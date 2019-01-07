@@ -116,6 +116,7 @@ class Xception(nn.Module):
         super(Xception, self).__init__()
         self.num_classes = num_classes
 
+        # entry flow
         self.conv1 = nn.Conv2d(3, 32, 3,2, 0, bias=False)
         self.bn1 = nn.BatchNorm2d(32)
         self.relu = nn.ReLU(inplace=True)
@@ -127,7 +128,8 @@ class Xception(nn.Module):
         self.block1=Block(64,128,2,2,start_with_relu=False,grow_first=True)
         self.block2=Block(128,256,2,2,start_with_relu=True,grow_first=True)
         self.block3=Block(256,728,2,2,start_with_relu=True,grow_first=True)
-
+        
+        # mid flow
         self.block4=Block(728,728,3,1,start_with_relu=True,grow_first=True)
         self.block5=Block(728,728,3,1,start_with_relu=True,grow_first=True)
         self.block6=Block(728,728,3,1,start_with_relu=True,grow_first=True)
@@ -138,6 +140,7 @@ class Xception(nn.Module):
         self.block10=Block(728,728,3,1,start_with_relu=True,grow_first=True)
         self.block11=Block(728,728,3,1,start_with_relu=True,grow_first=True)
 
+        # exit flow
         self.block12=Block(728,1024,2,2,start_with_relu=True,grow_first=False)
 
         self.conv3 = SeparableConv2d(1024,1536,3,1,1)

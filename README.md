@@ -3,7 +3,7 @@
 Practice codes using pytorch, including preparing data, training and testing.
 
 
-### Done
+## Done
 - [x] custom data transform
 - [x] custom dataset
 - [x] construst classification network
@@ -11,11 +11,11 @@ Practice codes using pytorch, including preparing data, training and testing.
 - [x] save and load model
 
 
-### Todo
+## Todo
 - [ ] segmentation task
 
 
-### Change logs
+## Change logs
 #### Aug 15, 2018
 * contrust simple network
 * use built-in CIFAR-10 dataset and dataloader
@@ -43,7 +43,7 @@ Practice codes using pytorch, including preparing data, training and testing.
 #### Jan 7, 2019
 * modify xception
 
-### References
+## References
 
 1.  **Gradient-based learning applied to document recognition**,<br />
     LeCun Y, Bottou L, Bengio Y, et al. <br />

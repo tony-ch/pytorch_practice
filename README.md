@@ -16,32 +16,33 @@ Practice codes using pytorch, including preparing data, training and testing.
 
 
 ## Change logs
-#### Aug 15, 2018
-* contrust simple network
-* use built-in CIFAR-10 dataset and dataloader
-* train and test
 
-#### Aug 16, 2018
-* add custom data transforms and dataset
+#### Jan 7, 2019
+* modify xception
 
-#### Aug 19, 2018
-* add AlexNet
+#### Jan 5, 2019
+* load pretrained model
 
-#### Aug 24, 2018
-* add VGGNet
+#### Jan 4, 2019
+* add resnet
 
 #### Dec 27, 2018
 * add Inception and Xception
 * add classificationDataset
 
-#### Jan 4, 2019
-* add resnet
+#### Aug 24, 2018
+* add VGGNet
 
-#### Jan 5, 2019
-* load pretrained model
+#### Aug 19, 2018
+* add AlexNet
 
-#### Jan 7, 2019
-* modify xception
+#### Aug 16, 2018
+* add custom data transforms and dataset
+
+#### Aug 15, 2018
+* contrust simple network
+* use built-in CIFAR-10 dataset and dataloader
+* train and test
 
 ## References
 
